@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game of life</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="game-of-life" id="game-of-life">
+    <div class="box box-dead"></div>
+    <div class="box box-live"></div>
+</div>
+</div>
+</body>
+<style>
+    .game-of-life {
+        display: flex;
+        flex-wrap: wrap;
+        width: 1200px;
+    }
+
+    .box {
+        width: 10px;
+        border: 1px solid gray;
+        height: 10px;
+    }
+
+    .box-live {
+        background-color: black;
+    }
+
+    .box-dead {
+        background-color: white;
+    }
+</style>
+<script>
+    const D = 0;
+    const L = 1;
+    const SIZE = 100;
+
+    function make2DArray(SIZE) {
+        let array = new Array(SIZE);
+        for (let i = 0; i < SIZE; i++) {
+            array[i] = new Array(SIZE)
+        }
+        return array;
+    }
+
+    function setupLifeData() {
+        let life = make2DArray(SIZE);
+        for (let i = 0; i < SIZE; i++) {
+            for (let j = 0; j < SIZE; j++) {
+                life[i][j] = Math.floor(Math.random() * 2);
+            }
+        }
+        return life;
+    }
+
+    function drawMap(lifeData) {
+        document.getElementById('game-of-life').innerHTML = drawTheMap(lifeData);
+    }
+
+    function drawTheMap(lifeData) {
+        let html = '';
+        for (let i = 0; i < SIZE; i++) {
+            for (let j = 0; j < SIZE; j++) {
+                if (lifeData[i][j] === L) {
+                    html += `<div class="box box-live"></div>`;
+                } else {
+                    html += `<div class="box box-dead"></div>`;
+                }
+            }
+        }
+        return html;
+    }
+
+    function countNumberOfNeighbor(i, j, oldLife) {
+        let numberOfNeighbor;
+
+        let topAxis = i === 0 ? SIZE - 1 : i - 1;
+        let botAxis = i === SIZE - 1 ? 0 : i + 1;
+        let leftAxis = j === 0 ? SIZE - 1 : j - 1;
+        let rightAxis = j === SIZE - 1 ? 0 : j + 1;
+
+        numberOfNeighbor = oldLife[topAxis][leftAxis] + oldLife[topAxis][j] + oldLife[topAxis][rightAxis]
+            + oldLife[i][leftAxis] + oldLife[i][rightAxis]
+            + oldLife[botAxis][leftAxis] + oldLife[botAxis][j] + oldLife[botAxis][rightAxis];
+
+        return numberOfNeighbor;
+    }
+
+    function nextLife(oldLife) {
+        let nextLife = setupLifeData();
+        for (let i = 0; i < SIZE; i++) {
+            for (let j = 0; j < SIZE; j++) {
+                let numberOfNeighbor = countNumberOfNeighbor(i, j, oldLife);
+                checkLivingCondition(i, j, oldLife, numberOfNeighbor, nextLife);
+            }
+        }
+        return nextLife;
+    }
+
+    function checkLivingCondition(i, j, oldLife, numberOfNeighbor, nextLife) {
+        if (oldLife[i][j] === L && numberOfNeighbor === 2 || numberOfNeighbor === 3) {
+            nextLife[i][j] = L;
+        } else if (oldLife[i][j] === D && numberOfNeighbor === 3) {
+            nextLife[i][j] = D;
+        } else {
+            nextLife[i][j] = D;
+        }
+    }
+
+    $(document).ready(function () {
+        let lifeData = setupLifeData();
+        drawMap(lifeData);
+
+        setInterval(function () {
+            lifeData = nextLife(lifeData);
+            drawMap(lifeData)
+        }, 500)
+    })
+</script>
+</html>
