@@ -17,7 +17,7 @@
     .game-of-life {
         display: flex;
         flex-wrap: wrap;
-        width: 1200px;
+        width: 120px;
     }
 
     .box {
@@ -37,9 +37,26 @@
 <script>
     const D = 0;
     const L = 1;
-    const SIZE = 100;
+    const SIZE = 10;
 
-    function make2DArray(SIZE) {
+    function setupLifeData() {
+            let life = [];
+
+            life.push([D, D, D, D, D, D, D, D, D, D]);
+            life.push([D, D, D, D, D, D, D, D, D, D]);
+            life.push([D, D, D, D, L, L, D, D, D, D]);
+            life.push([D, D, L, D, L, D, D, D, D, D]);
+            life.push([D, D, D, L, L, D, D, D, D, D]);
+            life.push([D, D, D, D, D, D, D, D, D, D]);
+            life.push([D, D, D, D, D, D, D, D, D, D]);
+            life.push([D, D, D, D, D, D, D, D, D, D]);
+            life.push([D, D, D, D, D, D, D, D, D, D]);
+            life.push([D, D, D, D, D, D, D, D, D, D]);
+
+            return life;
+        }
+
+    /* function make2DArray(SIZE) {
         let array = new Array(SIZE);
         for (let i = 0; i < SIZE; i++) {
             array[i] = new Array(SIZE)
@@ -55,7 +72,7 @@
             }
         }
         return life;
-    }
+    } */
 
     function drawMap(lifeData) {
         document.getElementById('game-of-life').innerHTML = drawTheMap(lifeData);
